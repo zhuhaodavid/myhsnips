@@ -1,0 +1,1178 @@
+// 非数学环境
+//     |-------- add (brace environment)
+//     |-------- new (begin-end environment)
+//     |-------- math
+// 数学环境
+//     |-------- Fraction
+//     |-------- Operators, arrow, Greek, function
+//     |-------- sum & diff & integral
+//     |-------- Super/sub script, space
+//     |-------- math env (add/new), font (font)
+//     |-------- braket (lr/big/phy), hat bottom
+
+global
+
+function cycle(arr,str){
+    let count = 0 ;
+    while (str!=arr[++count]&&count<arr.length);
+    return arr[(count+1)%arr.length]
+}
+
+
+// JavaScript code
+function gen_table(nrow, ncol) {
+	let results = "\n";
+	let order = 1;
+	for (var i=0; i<nrow; i++){
+		results += "		\\hline \n"
+		results += '		';
+		for(var j = 0;j <ncol-1;j++){
+			results += "$" +(order ).toString() + " & ";
+			order ++;
+		}
+		results += "$"+(order).toString() +" \\\\"+ "\\"+ "\n";
+		order ++;
+	}
+	results += "		\\hline"
+	return results;
+}
+
+function gen_matrix(nrow, ncol) {
+	let results = "\n";
+	let order = 1;
+	for (var i=0; i<nrow; i++){
+		results += '	';
+		for(var j = 0;j <ncol-1;j++){
+			results += "$" +(order ).toString() + " & ";
+			order ++;
+		}
+		results += "$"+(order).toString() +" \\\\"+ "\\"+ "\n";
+		order ++;
+	}
+	return results;
+}
+
+function tes_matrix(nrow, ncol,t) {
+	let results = "\n";
+	let order = 1;
+	for (var i=0; i<nrow; i++){
+		results += '	';
+		for(var j = 0;j <ncol-1;j++){
+			if (order > 1 ){
+				results += "${" +(order ).toString() + ":" + t[order-2] + "}\t & ";
+			}
+			else{
+				results += "$" +(order ).toString()  + " & ";
+			}
+			order ++;
+		}
+		results += " $"+(order).toString() +" \\\\"+ "\\"+ "\n";
+		order ++;
+	}
+	return results;
+}
+
+endglobal
+
+
+
+//=============================
+//      非数学环境
+//=============================
+
+snippet schrodinger "Schrodinger" w
+Schrödinger
+endsnippet
+
+// ============ add - brace environment ==============
+snippet `addCl([a-z]*) ` "color" A
+{\color{``rv = m[1]``} $0 }
+endsnippet
+
+snippet addClred "添加红色, 其它颜色如 addclblue\s" w
+{\color{red} $0 }
+endsnippet
+
+snippet addBold "加粗" w
+\textbf{$0}
+endsnippet
+
+snippet addItalic "斜体" w
+\textit{$0}
+endsnippet
+
+snippet addUnderline "下滑线" w
+\uline{$0}
+endsnippet
+
+snippet addUnderlineDouble "双下滑线" w
+\uuline{$0}
+endsnippet
+
+snippet addDeleteline "删除线" w
+\sout{$0}
+endsnippet
+
+snippet addRedUnderline "red underline" w
+{\color{red}\underline{{\color{black}$0}}}
+endsnippet
+
+snippet addMark "高亮 需要\usepackage{soul, color, xcolor} " w
+\hl{$0}
+endsnippet
+
+snippet addSmall "小号字体" w
+{\footnotesize $0}
+endsnippet
+
+snippet addLarge "大号字体" w
+{\LARGE $0}
+endsnippet
+
+// ============ new - begin end environment ==============
+
+snippet `new_([a-zA-Z]\w*)\s` "env" A
+\begin{``rv = m[1]``$1}$2
+	$0
+\end{``rv = m[1]``$1}
+endsnippet
+
+snippet newItem "Item environment" w
+\begin{itemize}
+	%\vspace{-1mm}  			% 整体上下移动
+	%\setlength{\itemsep}{0pt}	% 条目间距
+	%\setlength{\parskip}{0pt}	% 段落间距
+	\item $0
+\end{itemize}
+endsnippet
+
+snippet newFig "Figure environment" w
+\begin{figure}[tpb]
+	\centering
+	\includegraphics[width=0.8\linewidth]{$0}
+	% \caption{?}
+	% \label{fig:?}
+\end{figure}
+endsnippet
+
+snippet newTable "Table environment" w
+${1:3}x${2:3}table$0
+endsnippet
+
+snippet `([1-9]+)x([1-9]+)table\s` "Table environment" A
+\begin{table}[htpb]
+	\centering
+	\caption{caption}
+	\label{tab:label}
+	\begin{tabular}``
+    let results = "";
+    results += "{|l"+"|c".repeat(m[2]-2)+"|r|}"
+    rv = results;
+    ````
+    rv = gen_table(m[1],m[2]);
+    ``
+	\end{tabular}
+\end{table}
+endsnippet
+
+snippet newFrame "Frame environment" w
+% -------------------------------------------------
+% -------------------------------------------------
+\\begin{frame}{${1:frametitle}}
+    % \linespread{1.1}\selectfont
+
+    $0
+
+\\end{frame}
+endsnippet
+
+snippet newColumns "Column environment" w
+\begin{columns}
+    
+    % Column 1
+    \begin{column}{0.6\textwidth}
+        $1
+    \end{column}
+    
+    % Column 2    
+    \begin{column}{0.35\textwidth}
+        $0
+    \end{column}
+
+\end{columns}
+endsnippet
+
+snippet newPlot "Plot environment" w
+% \usepackage{pgfplots}
+\begin{figure}[htbp]
+	\centering
+	\begin{tikzpicture}
+		\begin{axis}[
+			xmin= ${1:-10}, xmax= ${2:10},
+			ymin= ${3:-1}, ymax = ${4:1},
+			axis lines = middle,
+		]
+			\addplot[domain=$1:$2, samples=${5:100}]{${7:sin(10*pi*x)}};
+		\end{axis}
+	\end{tikzpicture}
+	\caption{$8}
+	\label{${9:$8}}
+\end{figure}
+endsnippet
+
+snippet newNode "Tikz node" w
+\node[$5] (${1/[^0-9a-zA-Z]//g}${2}) ${3:at (${4:0,0}) }{$${1}$};
+$0
+endsnippet
+
+// ============ math environment ==============
+
+snippet mmm "inline Math" iwA
+$ $1 $$0
+endsnippet
+
+snippet `mmm\s` "inline Math" iwA
+$ $1 $$0
+endsnippet
+
+snippet MMM "display Math" iwA
+\[
+	${3}
+\]
+endsnippet
+
+snippet `MMM\s` "display Math" A
+\[
+	${3}
+\]
+endsnippet
+
+snippet align "添加多个利用 $ 对齐的公式, *表示不编号" iwA
+\begin{align${1:*}}
+	$0
+\end{align${1:*}}
+endsnippet
+
+snippet gather "添加多个居中对齐的公式, *表示不编号" w
+\begin{gather${1:*}}
+	$0
+\end{gather${1:*}}
+endsnippet
+
+snippet newEq "添加单个公式, *表示不编号" w
+\begin{equation${1:*}}
+	$0
+\end{equation${1:*}}
+endsnippet
+
+
+
+
+//=============================
+//      数学环境
+//=============================
+
+// ============ Fraction ==============
+
+snippet // "fraction" AmM
+\frac{$1}{$2}$0
+endsnippet
+
+snippet `^.*\)//` "Fraction with ()" Am
+``
+    let str = m[0];
+    str = str.slice(0, -2);
+    let lastIndex = str.length - 1;
+
+    let depth = 0;
+    let i = str.length - 1;
+    let flag = 0;
+    
+    while (true) {
+        if (str[i] == ')') depth += 1;
+        if (str[i] == '(') depth -= 1;
+        if (i  == 0)  depth = 0, flag = 1;
+        if (depth == 0) break;
+        i -= 1;
+    }
+    
+    let results = str
+    if (flag==0) results = str.slice(0, i) + "\\frac{" + str.slice(i+1, -1) + "}{$1}$0";
+    if (flag==1) results += "/";
+    rv = results;
+        ``
+endsnippet
+
+snippet `((\d+)|(\d*)(\\)?([A-Za-z^_\)\(\d]+)((\^|_)(\{\d+|\d))*)(?<!right\)|bigr\)|Bigr\)|Biggr\)|biggr\))//` "fraction" Am
+\frac{``rv=m[1]``}{$1} $0
+endsnippet
+
+// ============ Operators, arrows ==============
+
+snippet +- "±" mwA
+\pm 
+endsnippet
+
+snippet -+ "∓" mwA
+\mp 
+endsnippet
+
+snippet cdot "·" wmAi
+\cdot 
+endsnippet
+
+snippet Dot "•" mwA
+\bigcdot 
+endsnippet
+
+snippet oxx "⊗" mwA
+\otimes 
+endsnippet
+
+snippet xx "×" mwA
+\times 
+endsnippet
+
+snippet inn "∈" mwA
+\in 
+endsnippet
+
+snippet `(?<![\\a-zA-Z])notin` "∉" Am
+\notin 
+endsnippet
+
+snippet `(?<![\\a-zA-Z])forall` "∀" Am
+\forall 
+endsnippet
+
+snippet `e\\xi st` "∃" Am
+\exists 
+endsnippet
+
+snippet \\\ "∖" mwA
+\setminus 
+endsnippet
+
+snippet >> "≫" mwA
+\gg 
+endsnippet
+
+snippet << "≪" mwA
+\ll 
+endsnippet
+
+snippet >= "≥" miA
+\geq 
+endsnippet
+
+snippet <= "≤" Aim
+\leq
+endsnippet
+
+snippet != "≠" Aim
+\neq 
+endsnippet
+
+snippet `(?<![\\a-zA-Z])neq` "≠" Am
+\neq 
+endsnippet
+
+snippet `&= =` "≡" Am
+\equiv 
+endsnippet
+
+snippet == "&=" Aim
+&= 
+endsnippet
+
+snippet =~ "≅" Aim
+\cong 
+endsnippet
+
+snippet ~~ "∼" mAi
+\sim 
+endsnippet
+
+snippet `\\sim ~` "≈" Am
+\approx 
+endsnippet
+
+snippet prop " ∝" wm
+\propto 
+endsnippet
+
+snippet `\| ->` "↦" Ami
+\mapsto 
+endsnippet
+
+snippet `= >` "⟹" Ami
+\implies 
+endsnippet
+
+snippet `< =` "⟸" Ami
+\impliedby
+endsnippet
+
+snippet `(?<![\\a-zA-Z])iff` "⟺" Am
+\iff
+endsnippet
+
+snippet -> "→" Ami
+\to 
+endsnippet
+
+snippet <- "←" Ami
+\gets 
+endsnippet
+
+// arrow
+
+snippet uparrow "↑" mwi
+\uparrow 
+endsnippet
+
+snippet arrUp "↑" mw
+\uparrow 
+endsnippet
+
+snippet `(\\uparrow|\\Uparrow|\\upuparrows)(| );` "↑" Am
+``
+let r=["\\uparrow", "\\Uparrow", "\\upuparrows"];
+rv=cycle(r,m[1])+m[2];
+``
+endsnippet
+
+snippet downarrow "↓" mwi
+\downarrow 
+endsnippet
+
+snippet arrDown "↓" mw
+\downarrow 
+endsnippet
+
+snippet `(\\downarrow|\\Downarrow|\\downdownarrows)(| );` "↓" Am
+``
+let r=["\\downarrow", "\\Downarrow", "\\downdownarrows"];
+rv=cycle(r,m[1])+m[2];
+``
+endsnippet
+
+snippet arrLeft "←" mw
+\leftarrow 
+endsnippet
+
+snippet `(\\leftarrow|\\Leftarrow|\\longleftarrow|\\Longleftarrow)(| );` "↓" Am
+``
+let r=["\\leftarrow", "\\Leftarrow", "\\longleftarrow", "\\Longleftarrow"];
+rv=cycle(r,m[1])+m[2];
+``
+endsnippet
+
+snippet arrRight "←" mw
+\rightarrow 
+endsnippet
+
+snippet `(\\rightarrow|\\Rightarrow|\\longrightarrow|\\Longrightarrow)(| );` "↓" Am
+``
+let r=["\\rightarrow", "\\Rightarrow", "\\longrightarrow", "\\Longrightarrow"];
+rv=cycle(r,m[1])+m[2];
+``
+endsnippet
+
+snippet arrLeftRight "↔" mw
+\leftrightarrow 
+endsnippet
+
+snippet `(\\leftrightarrow|\\Leftrightarrow|\\longleftrightarrow|\\Longleftrightarrow|\\leftrightarrows)(| );` "↓" Am
+``
+let r=["\\leftrightarrow", "\\Leftrightarrow", "\\longleftrightarrow", "\\Longleftrightarrow","\\leftrightarrows"];
+rv=cycle(r,m[1])+m[2];
+``
+endsnippet
+
+snippet ... "cdots" iAm
+\cdots 
+endsnippet
+
+// ============ Greek Alphabat, function ==============
+
+snippet `(?<!\\)(alpha|beta|gamma|delta|zeta|vartheta|theta|iota|varkappa|kappa|lambda|mu|nu|xi|omicron|varpi|varrho|rho|pi|varsigma|sigma|tau|upsilon|phi|psi|varphi|chi|omega|Gamma|varGamma|Delta|varDelta|Theta|varTheta|Lambda|varLambda|Xi|varXi|Pi|varPi|varSigma|Sigma|varUpsilon|Upsilon|varPhi|Phi|varPsi|Psi|varOmega|Omega)` "greek" wAm
+\\``rv = m[1]``
+endsnippet
+
+snippet vartheta "ϑ" mw
+\vartheta
+endsnippet
+
+snippet varkappa "𝜘" mw
+\varkappa
+endsnippet
+
+snippet varpi "ϖ" mw
+\varpi
+endsnippet
+
+snippet varrho "ϱ" mw
+\varrho
+endsnippet
+
+snippet varsigma "ς" mw
+\varsigma
+endsnippet
+
+snippet varphi "ϕ" mw
+\varphi
+endsnippet
+
+snippet varpsi "𝛹" mw
+\varpsi
+endsnippet
+
+snippet varGamma "𝛤" mw
+\varGamma
+endsnippet
+
+snippet varDelta "𝛥" mw
+\varDelta
+endsnippet
+
+snippet varTheta "𝛩" mw
+\varTheta
+endsnippet
+
+snippet varLambda "𝛬" mw
+\varLambda
+endsnippet
+
+snippet varXi "𝛯" mw
+\varXi
+endsnippet
+
+snippet varPi "𝛱" mw
+\varPi
+endsnippet
+
+snippet varSigma "𝛴" mw
+\varSigma
+endsnippet
+
+snippet varUpsilon "𝛶" mw
+\varUpsilon
+endsnippet
+
+snippet varPhi "𝛷" mw
+\varPhi
+endsnippet
+
+snippet varPsi "𝛹" mw
+\varPsi
+endsnippet
+
+snippet varOmega "𝛺" mw
+\varOmega
+endsnippet
+
+snippet vareps "ε" mw
+\varepsilon
+endsnippet
+
+snippet eta "η" mw
+\eta
+endsnippet
+
+snippet epsilon "ϵ" mw
+\epsilon
+endsnippet
+
+snippet `(?<![\\a-zA-Z])eta ` "greek" mA
+ \eta 
+endsnippet
+
+snippet `\\no\\nu mber` "greek" mA
+\nonumber
+endsnippet
+
+snippet `(?<=sinh|cosh|tanh|coth|csch|sech)` "in math" Am
+
+endsnippet
+
+snippet `(?<!\\)(sin|cos|tan|cot|csc|sec|ln|log|exp|perp|arcsin|arccos|arctan|arccot|arccsc|arcsec|zeta|timeshbar|Re|Im|det|nabla)` "in math" Am
+\\``rv = m[1]``
+endsnippet
+
+snippet sqrt "in math" mw
+\sqrt{$0}
+endsnippet
+
+snippet `(?<![\\a-zA-Z])(diag|rank|lcm|tr|Tr|res)` "math function" Am
+\\operatorname{``rv = m[1]``}
+endsnippet
+
+snippet operatorname "\operatorname{$0} " mw
+\operatorname{$0}
+endsnippet
+
+snippet `(?<![\\a-zA-Z])arg(max|min)` "argmin/max" Am
+\mathop{\arg \\``rv = m[1]``}
+endsnippet
+
+snippet cov "Covariance" mw
+\mathrm{Cov} 
+endsnippet
+
+snippet mean "Expectation" mw
+\mathbb{E}\left\lbrack $1 \right\rbrack $0
+endsnippet
+
+snippet Cons "const" mw
+\text{Const. }
+endsnippet
+
+snippet kbt "kbt" mw
+k_B T 
+endsnippet
+
+snippet ooo "∞" mwA
+\infty 
+endsnippet
+
+\\ ============= sum & diff & integral =============
+
+snippet sum "sum" wmi
+\sum_{${1}}^{${2}} $0
+endsnippet
+
+snippet sumd "definite sum" wmi
+\sum_{${1:n}=${2:1}}^{${3:\infty}} $0
+endsnippet
+
+snippet int "integral" wmi
+\int \\mathrm{d}${1:x} \, $0
+endsnippet
+
+snippet intd "definite integral" wmi
+\int_{${1:-\infty}}^{${2:\infty}} \\mathrm{d}${3:x} \, $0
+endsnippet
+
+snippet prod "product" wmi
+\prod_{${1:n=${2:1}}}^{${3:\infty}} ${4:${VISUAL}} $0
+endsnippet
+
+snippet diff "d/dx" Awm
+\frac{\mathrm{d}${1:y}}{\mathrm{d}${2:x}} $0
+endsnippet
+
+snippet `(?<![\\a-zA-Z])dd[\s]{0,1}(((?!pp).)+)(?<!\s)\s` "parital / partial x" wAm
+\frac{\mathrm{d}}{\mathrm{d} ``rv=m[1]``} $0
+endsnippet
+
+snippet `\\pi\sff` "parital / partial x" wAm
+\frac{\partial ${1:y}}{\partial ${2:x}} $0
+endsnippet
+
+snippet `(?<![\\a-zA-Z])pp[\s]{0,1}(((?!pp).)+)(?<!\s)\s` "parital / partial x" wAm
+\frac{\partial}{\partial ``rv=m[1]``} $0
+endsnippet
+
+snippet variat "delta / delta x" wAm
+\frac{\delta ${1:y}}{\delta ${2:x}} $0
+endsnippet
+
+snippet partial "partial" wmi
+\partial 
+endsnippet
+
+snippet pp "ddiff" wmi
+\partial 
+endsnippet
+
+snippet dd "ddiff" wmi
+\mathrm{d}
+endsnippet
+
+snippet ii "ddiff" wmi
+\mathrm{i}
+endsnippet
+
+priority 300
+snippet eto "math env" wAm
+\mathrm{e}^{$1} $0
+endsnippet
+
+snippet taylor "taylor" wmi
+\sum_{${1:k}=${2:0}}^{${3:\infty}} ${4:c_$1} (x-a)^$1 $0
+endsnippet
+
+snippet lim "limit" wmi
+\lim_{${1:n} \to ${2:\infty}} 
+endsnippet
+
+snippet limsup "limsup" wmi
+\limsup_{${1:n} \to ${2:\infty}} 
+endsnippet
+
+snippet into "loop int" wmi
+\oint \\mathrm{d}${1:x} \\, $0
+endsnippet
+
+snippet int2 "double int" wmi
+\iint \\mathrm{d}${1:x} \\, $0
+endsnippet
+
+snippet int3 "triple int" wmi
+\iiint \\mathrm{d}${1:x} \\, $0
+endsnippet
+
+\\ ============= superscript subscript space =============
+
+snippet dagger "dag" mwi
+^{\dagger} 
+endsnippet
+
+snippet prime "prime" mwi
+^{\prime} 
+endsnippet
+
+snippet square "prime" mwi
+^2 
+endsnippet
+
+snippet `(?<=\S)[ ]*sr ` "with the subscript" Am
+^2 $0
+endsnippet
+
+snippet star "prime" mwi
+^* 
+endsnippet
+
+snippet `(?<=\S)[ ]*sub` "with the subscript" Am
+_{$1}$0
+endsnippet
+
+snippet `(\\times)([a-zA-Z0-9])` "space after +-=\times" Am
+\\times ``rv = m[2]``
+endsnippet
+
+snippet `([a-zA-Z\}])(\d)` "auto subscript with number after alphabat  a1->a_1" mA
+``rv = m[1]``_``rv = m[2]``
+endsnippet
+
+snippet `(?<=[A-Za-z]|\})_(\d\d)` "two number subscript" mA
+_{``rv=m[1]``}
+endsnippet
+
+snippet `(?<=\S)[ ]*tp` "with the subscript" Am
+^{$1}$0
+endsnippet
+
+snippet `([a-zA-Z0-9\}\{\]\[\(\)])([\+\-\=])` "space before + - =" Am
+``rv = m[1]`` ``rv = m[2]``
+endsnippet
+
+snippet `([\+\-\=])([a-zA-Z0-9\}\{\]\[\(\)])` "space before + - =" Am
+``rv = m[1]`` ``rv = m[2]``
+endsnippet
+
+snippet `(?<=\\sin|\\cos|\\tan|\\cot|\\csc|\\sec|\\ln|\\log|\\exp|\\perp|\\arcsin|\\arccos|\\arctan|\\arccot|\\arccsc|\\arcsec|\\zeta|\\times|\\sinh|\\cosh|\\tanh|\\coth|\\csch|\\sech)([a-zA-Z])` "space after this" Am
+ ``rv = m[1]``
+endsnippet
+
+snippet `(?<=\\alpha|\\beta|\\gamma|\\delta|\\zeta|\\vartheta|\\theta|\\iota|\\varkappa|\\kappa|\\lambda|\\mu|\\nu|\\xi|\\omicron|\\varpi|\\pi|\\varrho|\\rho|\\varsigma|\\sigma|\\tau|\\upsilon|\\phi|\\varphi|\\chi|\\omega|\\Gamma|\\varGamma|\\Delta|\\varDelta|\\Theta|\\varTheta|\\Lambda|\\varLambda|\\Xi|\\varXi|\\Pi|\\varPi|\\varSigma|\\Sigma|\\varUpsilon|\\Upsilon|\\varPhi|\\Phi|\\varPsi|\\Psi|\\varOmega|\\Omega|\\vert|\\varepsilon)([a-zA-Z])` "space after this" Am
+ ``rv = m[1]``
+endsnippet
+
+snippet `(?<![ \\])\\quad\\,\\; {2,4}` "\quad -> \qquad  " Am
+\\qquad $0
+endsnippet
+
+snippet `(?<![ \\])\\quad {2,4}` "\quad -> \quad\,\;" Am
+\\quad\\;\\; $0
+endsnippet
+
+snippet `(?<![ \\])\\;\\; {2,4}` "\\;\\; -> \quad " Am
+\\quad $0
+endsnippet
+
+snippet `(?<![ \\])   ` " -> \\;\\;" Am
+\\;\\; $0
+endsnippet
+
+
+\\ ============= math env =============
+
+snippet addTxt "text" miw
+\text{$1} $0
+endsnippet
+
+snippet stt "text" miw
+_\text{$1} $0
+endsnippet
+
+snippet addEqSet "math env" mw
+\setlength\abovedisplayskip{${1:6}pt}
+\setlength\belowdisplayskip{${2:6}pt}
+endsnippet
+
+snippet newAligened "align 环境" mw
+\begin{aligned}
+	$0
+\end{aligned}
+endsnippet
+
+snippet newGathered "gather 环境" mw
+\begin{gathered}
+	$0
+\end{gathered}
+endsnippet
+
+snippet newMatrix "用 这种形式 生成矩阵" mw
+${1:2} x ${2:2} ${3:b}matrix${4:same}$0
+endsnippet
+
+snippet `([0-9]+) x ([0-9]+) (b|p)matrix\s` "bmatrix" Am
+\begin{``rv = m[3]``matrix}``
+	rv = gen_matrix(m[1],m[2]);
+``\end{``rv = m[3]``matrix}$0
+endsnippet
+
+snippet `([0-9]+) x ([0-9]+) (b|p)matrixsame\s` "bmatrix" Am
+\begin{``rv = m[3]``matrix}``
+	let len2 = m[1];
+    let len3 = m[2];
+	let results = "\n";
+	for (var i=0; i<len2; i++){
+		results += '	' + "$1 & ".repeat(len3-1) + "$1 \\\\"+ "\\"+ "\n";
+	}
+	rv = results;
+	``\end{``rv = m[3]``matrix}$0
+endsnippet
+
+snippet newCase "cases" mw
+\begin{cases}
+	$0
+\end{cases}
+endsnippet
+
+snippet newVecCol "column vector" mw
+\begin{pmatrix} ${1:x_1}\\\\ ${2:\vdots} \\\\ ${3:x_n} \end{pmatrix}$0
+endsnippet
+
+snippet newVecRow "row vector" mw
+\begin{pmatrix} ${1:x_1}& ${2:\cdots}& ${3:x_n} \end{pmatrix}$0
+endsnippet
+
+
+\\ ============= font =============
+
+snippet fontscript "花体" mwi
+\mathcal{$0}
+endsnippet
+
+snippet fontblackboard "双线体" mwi
+\mathbb{$0}
+endsnippet
+
+snippet fontfrak "双线体" mwi
+\mathfrak{$0}
+endsnippet
+
+snippet fontbold "粗体 boldsymbol" mwi
+\boldsymbol{$0}
+endsnippet
+
+snippet fontbold2 "粗体 mathbf" mwi
+\mathbf{$0}
+endsnippet
+
+snippet ll "l" mw
+\ell
+endsnippet
+
+\\ ============= braket =============
+
+// lr method
+
+snippet abs "left| right|" mwi
+| $1 | $0
+endsnippet
+
+snippet norm "left\| right\|" mwi
+\| $1 \| $0
+endsnippet
+
+snippet set "left\{ right\}" mwi
+\{ $1 \\} $0
+endsnippet
+
+snippet lr(.) "\left( . \right)" mwi
+\\left( $0 \\right)
+endsnippet
+
+snippet lr|.| "\left| . \right|" mwi
+\\left| $0 \\right|
+endsnippet
+
+snippet lr||.|| "\left|| . \right||" mwi
+\\left\\| $0 \\right\\|
+endsnippet
+
+snippet lr{.} "\left{ . \right}" mwi
+\\left\{ $0 \\right\\}
+endsnippet
+
+snippet lr[.] "\left[ . \right]" mwi
+\\left[ $0 \\right]
+endsnippet
+
+snippet lr<.> "\left\langle . \right\rangle" mwi
+\\langle $0 \\rangle
+endsnippet
+
+snippet lr<.| "\left\langle . \right|" mwi
+\\langle $0 |
+endsnippet
+
+snippet lr|.> "\left| . \right\rangle" mwi
+| $0 \\rangle
+endsnippet
+
+snippet lrceil "ceil" mwi
+\lceil $1 \rceil $0
+endsnippet
+
+snippet lrfloor "floor" mwi
+\left\lfloor $1 \right\rfloor $0
+endsnippet
+
+// big method
+
+snippet big(.) "\bigl( . \bigr)" mwi
+\\${1:big}l( $0 \\${1:big}r)
+endsnippet
+
+snippet big|.| "\bigl| . \bigr|" mwi
+\\${1:big}l| $0 \\${1:big}r|
+endsnippet
+
+snippet big||.|| "\bigl|| . \bigr||" mwi
+\\${1:big}l\\| $0 \\${1:big}r\\|
+endsnippet
+
+snippet big{.} "\bigl{ . \bigr}" mwi
+\\${1:big}l\{ $0 \\${1:big}r\}
+endsnippet
+
+snippet big[.] "\bigl[ . \bigr]" mwi
+\\${1:big}l[ $0 \\${1:big}r]
+endsnippet
+
+snippet big<.> "\bigl\langle . \bigr\rangle" mwi
+\\${1:big}l\\langle $0 \\${1:big}r\\rangle
+endsnippet
+
+snippet big<.| "\bigl\langle . \bigr|" mwi
+\\${1:big}l\\langle $0 \\${1:big}r|
+endsnippet
+
+snippet big|.> "\bigl| . \bigr\rangle" mwi
+\\${1:big}l| $0 \\${1:big}r\\rangle
+endsnippet
+
+snippet bigInnerProduct "< . | . >" mwi
+\\${1:big}l\\langle $2 \\${1:big}| $0 \\${1:big}r\\rangle
+endsnippet
+
+snippet bigOuterProduct "| . >< . |" mwi
+\\${1:big}l| $2 \\${1:big}\\rangle\\hspace{-0.5mm}\\${1:big}\\langle $0 \\${1:big}r|
+endsnippet
+
+snippet bigMatrixElement "leftangle rightangle" mwi
+\\${1:big}l\\langle ${2} \\${1:big}| ${3} \\${1:big}| ${0} \\${1:big}r\rangle
+endsnippet
+
+// direct method 
+
+snippet `\<\|>\s` "inner product" Am
+\langle $1 \vert $2 \rangle $0
+endsnippet
+
+snippet `\|><\|\s` "outer product" Am
+\vert $1 \rangle\langle $2 \vert $0
+endsnippet
+
+snippet `\<\|\|>\s` "matrix element" Am
+\langle $1 \vert $2 \vert $3 \rangle $0
+endsnippet
+
+snippet `\|>\s` "|>" Am
+\\left| $1 \\right\\rangle $0
+endsnippet
+
+snippet `<\|\s` "<|" Am
+\\left\\langle $1 \\right| $0
+endsnippet
+
+snippet `<>\s` "<>" Am
+\\langle $1 \\rangle $0
+endsnippet
+
+snippet `<\s*(.+?)\s*\|\s` "<sth|" Am
+\\left\\langle ``rv = m[1]`` \\right| 
+endsnippet
+
+snippet `\|\s*(.+?)\s*>\s` "|sth>" Am
+\\left| ``rv = m[1]`` \\right\\rangle 
+endsnippet
+
+snippet `<\s*(.*?\S)\s*>\s` "<sth>" Am
+\\left\\langle ``rv = m[1]`` \\right\\rangle 
+endsnippet
+
+
+// phy method
+
+snippet phyBra "bra" mwi
+\bra{ $1 }$0
+endsnippet
+
+snippet phyKet "ket" mwi
+\ket{ $1 }$0
+endsnippet
+
+snippet phyAvg "leftangle rightangle" mwi
+\left\langle $1 \right\rangle $0
+endsnippet
+
+snippet phyInnerProduct "< . | . > " mwi
+\left\langle $1 \vert $2 \right\rangle $0
+endsnippet
+
+snippet phyOuterProduct "| . > < . |" mwi
+\ket{$1}\hspace{-0.7mm}\bra{$2} $0
+endsnippet
+
+snippet phyMatrixElement "< . | . | . >" mwi
+\left\langle $1 \vert $2 \vert $3 \right\rangle $0
+endsnippet
+
+\\ ============= hat bottom =============
+
+snippet underline "underline" mwi
+\underline{$0}
+endsnippet
+
+snippet overline "overline" mwi
+\overline{$0}
+endsnippet
+
+snippet underbrc "underbrace" mwi
+\underbrace{$1}_{$0}
+endsnippet
+
+snippet overbrc "overbrace" mwi
+\overbrace{$1}^{$0}
+endsnippet
+
+snippet overtilde "tilde" mwi
+\widetilde{$0}
+endsnippet
+
+snippet overarrow "vector" mwi
+\overrightarrow{$0}
+endsnippet
+
+snippet overhat "hat" mi
+\hat{$1}$0
+endsnippet
+
+snippet hat "hat" mi
+\hat{$1}$0
+endsnippet
+
+snippet overtilde "tilde" mi
+\tilde{$1}$0
+endsnippet
+
+snippet tilde "tilde" mi
+\tilde{$1}$0
+endsnippet
+
+snippet overbar "bar" mi
+\bar{$1}$0
+endsnippet
+
+snippet bar "bar" mi
+\bar{$1}$0
+endsnippet
+
+snippet overdot "dot" mi
+\dot{$1}$0
+endsnippet
+
+snippet dot "dot" mi
+\dot{$1}$0
+endsnippet
+
+snippet overddot "dot" mi
+\ddot{$1}$0
+endsnippet
+
+snippet ddot "dot" mi
+\ddot{$1}$0
+endsnippet
+
+snippet `(\\)([a-zA-Z0-9]+)[\s]*mscr` "mathcal" Am
+\mathcal{\``rv = m[2]``}$0
+endsnippet
+
+snippet `([a-zA-Z0-9])mscr` "mathcal" Am
+\mathcal{``rv = m[1]``}$0
+endsnippet
+
+snippet `(\\)([a-zA-Z0-9]+)[\s]*hat` "hat" Am
+\hat{\``rv = m[2]``}$0
+endsnippet
+
+snippet `([a-zA-Z0-9])hat` "hat" Am
+\hat{``rv = m[1]``}$0
+endsnippet
+
+snippet `(\\)([a-zA-Z0-9]+)[\s]*hat` "hat" Am
+\hat{\``rv = m[2]``}$0
+endsnippet
+
+snippet `([a-zA-Z0-9])hat` "hat" Am
+\hat{``rv = m[1]``}$0
+endsnippet
+
+snippet `(\\)([a-zA-Z0-9]+)[\s]*tilde` "tilde" Am
+\tilde{\``rv = m[2]``}$0
+endsnippet
+
+snippet `([a-zA-Z0-9])tilde` "tilde" Am
+\tilde{``rv = m[1]``}$0
+endsnippet
+
+snippet `(\\)([a-zA-Z0-9]+)[\s]*bm` "bm" Am
+\boldsymbol{\``rv = m[2]``}$0
+endsnippet
+
+snippet `([a-zA-Z0-9])bm` "bm" Am
+\boldsymbol{``rv = m[1]``}$0
+endsnippet
+
+snippet `(\\)([a-zA-Z0-9]+)[\s]*dot` "dot" Am
+\dot{\``rv = m[2]``}$0
+endsnippet
+
+snippet `([a-zA-Z0-9])dot` "dot" Am
+\dot{``rv = m[1]``}$0
+endsnippet
+
+snippet `(\\)([a-zA-Z0-9]+)[\s]*doot` "ddot" Am
+\ddot{\``rv = m[2]``}$0
+endsnippet
+
+snippet `(?<=\S)[ ]*sr ` "with the subscript" Ami
+^2 $0
+endsnippet
