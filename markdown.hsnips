@@ -107,26 +107,26 @@ endsnippet
 // ============ math environment ==============
 
 snippet mmm "inline Math" wA
-${ $0 }$ 
+&nbsp;${ $0 }$&nbsp;
 endsnippet
 
 snippet mmm "inline Math" wAi
- ${ $0 }$ 
+&nbsp;${ $0 }$&nbsp;
 endsnippet
 
 snippet `mmm\s` "inline Math" wA
-${ $0 }$
+&nbsp;${ $0 }$&nbsp;
 endsnippet
 
 snippet MMM "display Math" wA
 $$
-	${0}
+${0}
 $$
 endsnippet
 
 snippet `MMM\s` "display Math" wA
 $$
-	${0}
+${0}
 $$
 endsnippet
 
@@ -140,7 +140,7 @@ endsnippet
 
 snippet gather "添加多个居中对齐的公式, *表示不编号" w
 $$
-	$0
+$0
 $$
 endsnippet
 
@@ -670,8 +670,8 @@ endsnippet
 
 \\ ============= superscript subscript space =============
 
-snippet dagger "dag" mwi
-^{\dagger} 
+snippet dag "dag" mwi
+\dagger
 endsnippet
 
 snippet prime "prime" mwi
@@ -934,39 +934,39 @@ endsnippet
 // direct method 
 
 snippet `\<\|>\s` "inner product" Am
-\\braket{ $1 \\vert $2 } $0
+\langle $1 \vert $2 \rangle $0
 endsnippet
 
 snippet `\|><\|\s` "outer product" Am
-\ket{$1}\hspace{-1mm}\bra{$2} $0
+\vert $1 \rangle\langle $2 \vert $0
 endsnippet
 
 snippet `\<\|\|>\s` "matrix element" Am
-\\braket{ $1 \\vert $2 \\vert $3 } $0
+\langle $1 \vert $2 \vert $3 \rangle $0
 endsnippet
 
 snippet `\|>\s` "|>" Am
-\\ket{ $0 } 
+\\left| $1 \\right\\rangle $0 
 endsnippet
 
 snippet `<\|\s` "<|" Am
-\\bra{ $0 }
+\\left\\langle $1 \\right| $0
 endsnippet
 
 snippet `<>\s` "<>" Am
-\\braket{ $0 } 
+\\langle $1 \\rangle $0 
 endsnippet
 
 snippet `\s<\s*([^\|]*)\s*\|\s` "<sth|" Am
- \\bra{``rv = m[1]``}
+\\left\\langle ``rv = m[1]`` \\right|
 endsnippet
 
 snippet `\s\|\s*([^\|]*)\s*>\s` "|sth>" Am
- \\ket{``rv = m[1]``}
+\\left| ``rv = m[1]`` \\right\\rangle
 endsnippet
 
 snippet `\s<\s*([^\|]*)\s*>\s` "<sth>" Am
- \\braket{``rv = m[1]``}
+\\left\\langle ``rv = m[1]`` \\right\\rangle
 endsnippet
 
 // phy method
@@ -980,19 +980,19 @@ snippet phyKet "ket" mwi
 endsnippet
 
 snippet phyAvg "leftangle rightangle" mwi
-\braket{ $1 } $0
+\left\langle $1 \right\rangle $0
 endsnippet
 
 snippet phyInnerProduct "< . | . > " mwi
-\braket{ $1 \\vert $2 } $0
+\left\langle $1 \vert $2 \right\rangle $0
 endsnippet
 
 snippet phyOuterProduct "| . > < . |" mwi
-\ket{$1}\hspace{-1mm}\bra{$2} $0
+\left\vert $1 \right\rangle\left\langle $2 \right\vert $0
 endsnippet
 
 snippet phyMatrixElement "< . | . | . >" mwi
-\braket{ $1 \\vert $2 \\vert $3 } $0
+\left\langle $1 \vert $2 \vert $3 \right\rangle $0
 endsnippet
 
 \\ ============= hat bottom =============
@@ -1143,4 +1143,8 @@ endsnippet
 
 snippet dbavg "<< >>" mi
 \langle \hspace{-1mm} \langle $1 \rangle \hspace{-1mm} \rangle $0
+endsnippet
+
+snippet dickmodel "dick model" mi
+H_\text{D} = \omega_{0} a^{\dagger} a + \frac{\omega_{z}}{2} \sum_{i = 1}^{N} \sigma_{i}^{z} + \frac{g}{\sqrt{N}} \sum_{i = 1}^{N} \sigma_{i}^{x}(a^{\dagger} + a)
 endsnippet

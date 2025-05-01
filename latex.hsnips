@@ -1048,7 +1048,7 @@ snippet phyInnerProduct "< . | . > " mwi
 endsnippet
 
 snippet phyOuterProduct "| . > < . |" mwi
-\ket{$1}\hspace{-0.7mm}\bra{$2} $0
+\left\vert $1 \right\rangle\left\langle $2 \right\vert $0
 endsnippet
 
 snippet phyMatrixElement "< . | . | . >" mwi
